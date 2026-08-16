@@ -25,14 +25,6 @@ const columns = [
         format: (value) => moment(value.toDate()).format("MMM-DD-YYYY"),
     },
     {
-        id: 'dateTime',
-        label: 'Time',
-        type: 'time',
-        minWidth: 170,
-        align: 'left',
-        format: (value) => moment(value).format("h:mm a"),
-    },
-    {
         id: 'phase',
         label: 'Phase',
         type: 'string',
@@ -51,7 +43,7 @@ const checkWhiteSpace = (name) => {
 
 const TimelineEventList = ({ timelineEvents, nexusEvents }) => (
     <>
-
+{console.log("timelineEvents", timelineEvents)}
         <TableContainer className="tableContainer">
             <Table stickyHeader aria-label="sticky table">
                 <TableHead >
@@ -88,11 +80,16 @@ const TimelineEventList = ({ timelineEvents, nexusEvents }) => (
                                             Prime Event
                                         </Button>
                                     </Link>
-                                    <Link key={key} to={`/event/${row['code']}`} state={{ eventData: nexusEvents.find((event) => event.code == `${row['code']}`) }}>
-                                        <Button variant="outlined" size="small" color="primary">
-                                            Nexus Event
-                                        </Button>
-                                    </Link>
+                                    {row?.hasNexusEvent ?
+                                        <Link key={key} to={`/event/${row['code']}`} state={{ eventData: nexusEvents.find((event) => event.code == `${row['code']}`) }}>
+                                            <Button variant="outlined" size="small" color="primary">
+                                                Nexus Event
+                                            </Button>
+                                        </Link>
+                                    :
+                                    ""
+                                    }
+
                                 </TableCell>
                             </TableRow>
                         );

@@ -14,14 +14,14 @@ const EventDetailPage = ({ match }) => {
 
     const location = useLocation();
 
-    const code = location.state.eventData.code;
+    const code = location?.state?.eventData?.code;
     // console.log(location.state.eventData);
 
-    const [eventInfo, setEventInfo] = useState({ code: '', date: '', pageTitle: '', titleImg: '', introText: '', changedText: '', extraText: '', originalText: '', scenarioText: '', bodyImg: '', notableChanges: [] });
+    const [eventInfo, setEventInfo] = useState({ code: '', releaseDate: '', pageTitle: '', titleImg: '', introText: '', changedText: '', extraText: '', originalText: '', scenarioText: '', bodyImg: '', notableChanges: [] });
 
     useEffect(() => {
 
-        setEventInfo(location.state.eventData);
+        setEventInfo(location?.state?.eventData);
 
     });
 
@@ -34,12 +34,12 @@ const EventDetailPage = ({ match }) => {
                 <Grid container style={{ paddingTop: '32px', paddingBottom: '32px' }}>
                     <Grid item xs={12} sm={6}>
                         <Typography variant="h5" component="h6" className="pageHeader" style={{ textAlign: 'left' }} gutterBottom>
-                            {eventInfo.eventTitle}
+                            {eventInfo?.eventTitle}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <Typography variant="h6" component="h2" className="pageHeader" style={{ textAlign: 'right' }} gutterBottom>
-                            {eventInfo.date === null ? '' : moment(eventInfo.date).format('MMM-DD-YYYY')}
+                            {eventInfo?.releaseDate === null ? '' : moment(eventInfo?.releaseDate).format('MMM-DD-YYYY')}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -65,7 +65,7 @@ const EventDetailPage = ({ match }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <div className="pageImage">
-                            <img src={eventInfo.titleImg} alt="Captain Carter" style={{ width: '90%' }}></img>
+                            <img src={eventInfo?.titleImg} alt="Captain Carter" style={{ width: '90%' }}></img>
                         </div>
                     </Grid>
                 </Grid>
@@ -75,7 +75,7 @@ const EventDetailPage = ({ match }) => {
                 <Grid container style={{ paddingTop: '32px', paddingBottom: '32px' }}>
                     <Grid item xs={12} sm={6}>
                         <div className="pageImage" style={{ paddingTop: '32px', paddingBottom: '32px' }}>
-                            <img src={eventInfo.bodyImg} alt={eventInfo.pageTitle} style={{ width: '90%' }}></img>
+                            <img src={eventInfo?.bodyImg} alt={eventInfo.pageTitle} style={{ width: '90%' }}></img>
                         </div>
                     </Grid>
                     {/* <Grid item xs={12} sm={6}>

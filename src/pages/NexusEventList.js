@@ -4,7 +4,6 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import SacredTimeline from '../components/SacredTimeline';
 import { database } from '../firebase/auth';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import TimelineEventList from '../components/TimelineEventList';
 
@@ -51,9 +50,7 @@ const NexusEventListPage = () => {
             <SacredTimeline timelineEvents={timelineEvents} nexusEvents={nexusEvents} />
 
             <Box sx={{ width: '80%', margin: '0 auto' }}>
-
                 <TimelineEventList timelineEvents={timelineEvents} nexusEvents={nexusEvents} />
-
             </Box>
         </>
     )
