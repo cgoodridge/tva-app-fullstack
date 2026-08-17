@@ -17,13 +17,31 @@ const EventDetailPage = ({ match }) => {
     const code = location?.state?.eventData?.code;
     // console.log(location.state.eventData);
 
-    const [eventInfo, setEventInfo] = useState({ code: '', releaseDate: '', pageTitle: '', titleImg: '', introText: '', changedText: '', extraText: '', originalText: '', scenarioText: '', bodyImg: '', notableChanges: [] });
+    const [eventInfo, setEventInfo] = useState({
+        code: '',
+        releaseDate: '',
+        pageTitle: '',
+        titleImg: '',
+        introText: '',
+        changedText: '',
+        extraText: '',
+        originalText: '',
+        scenarioText: '',
+        bodyImg: '',
+        notableChanges: [],
+    });
 
     useEffect(() => {
-
-        setEventInfo(location?.state?.eventData);
-
-    });
+        if (location?.state?.eventData) {
+            const eventData = location.state.eventData;
+            setEventInfo({
+                ...eventData,
+                releaseDate: eventData.releaseDate?.seconds
+                    ? moment(new Date(eventData.releaseDate.seconds * 1000)).format('MMM-DD-YYYY')
+                    : eventData.releaseDate || 'Invalid Date',
+            });
+        }
+    }, [location]);
 
     if (!code) return <NotFoundPage />
 
@@ -39,7 +57,7 @@ const EventDetailPage = ({ match }) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <Typography variant="h6" component="h2" className="pageHeader" style={{ textAlign: 'right' }} gutterBottom>
-                            {eventInfo?.releaseDate === null ? '' : moment(eventInfo?.releaseDate).format('MMM-DD-YYYY')}
+                        {eventInfo.releaseDate}
                         </Typography>
                     </Grid>
                 </Grid>

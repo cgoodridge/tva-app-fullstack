@@ -23,8 +23,6 @@ const SacredTimeline = ({ timelineEvents, nexusEvents }) => {
 
     });
 
-    const [loops] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-
     return (
 
         <Container id="timelineContainer" sx={{ display: 'flex', alignItems: 'center', height: '100%', width: '1000px' }}>
@@ -36,7 +34,6 @@ const SacredTimeline = ({ timelineEvents, nexusEvents }) => {
                     <>
                         <TimelineBranchPoint eventData={eventData} nexusData={nexusEvents.find((event) => event.code == eventData.code)} key={key} />
                         {/* <TimelineBranchPoint key={key} /> */}
-                        {console.log("Event Data: " , eventData)}
                     </>
                 ))}
                 <line x1="-100" y1="300" x2="5000" y2="300" stroke='red' strokeWidth="3px" />
@@ -77,54 +74,18 @@ const TimelineBranchPoint = ({ eventData, nexusData }) => {
     const yearConst = 365;
     let initialPoint = 10;
     let eventPosition = 0;
+    let daysSinceMCUStart = mcuStartPoint.diff(moment(), 'days') * (-1);
+
     //GET THE TOTAL NUMBER OF DAYS BETWEEN THE MCU START AND NOW
     /*
         diff/total days since start of mcu * 100 * 100| This will give us a number that we can use to scale the timeline based on the number of days since the start of the MCU. We can then use this number to calculate the position of each event on the timeline based on its release date.
     */
 
     // Calculate event position on timeline based on release date, relative to the start of the MCU
-    const calculateEventPosition = (releaseDate, previousEvent) => {
-        // console.log("Release Date: " + releaseDate?.toDate());
-
-        if (typeof previousEvent === 'undefined' || previousEvent === null) {
-            // return initialPoint;
-            let diff = mcuStartPoint.diff(moment(releaseDate?.toDate()), 'days') * (-1);
-            // console.log("Diff: " + diff);
-            if (diff < 30) {
-                // console.log("First Diff " + diff);
-                // console.log("First Event " + (initialPoint * 1).toString());
-                eventPosition = initialPoint;
-                // console.log("Event Position 1: " + eventPosition);
-                return eventPosition;
-            } else if (diff >= 30) {
-                // console.log("Second Diff " + diff);
-                // console.log("Second Event " + (initialPoint * 10).toString());
-                eventPosition = initialPoint * 10;
-                // console.log("Event Position 2: " + eventPosition);
-                return eventPosition;
-            }
-        } else {
-            initialPoint = 10;
-
-            let diff = 0;
-
-            if (previousEvent && previousEvent.toDate && releaseDate && releaseDate.toDate) {
-                diff = moment(previousEvent.toDate()).diff(moment(releaseDate.toDate()), 'days') * (-1);
-            }
-            if (diff < 30) {
-                // console.log("First Diff " + diff);
-                eventPosition = initialPoint * 1;
-                console.log("Event Position 3: " + eventPosition);
-                return eventPosition;
-            } else if (diff >= 30) {
-                // console.log("Second Diff " + diff);
-                // In this approach we're assigning the event a place on the timeline based on the difference in days from the previous event
-                // TODO - Expose multiplier value to give more fine control of timeline scale
-                eventPosition = initialPoint * 5;
-                console.log("Event Position 4: " + eventPosition);
-                return eventPosition;
-            }
-        }
+    const calculateEventPosition = (releaseDate) => {
+        let diff = mcuStartPoint.diff(moment(releaseDate?.toDate()), 'days') * (-1);
+        eventPosition = initialPoint + ((diff * 5) / daysSinceMCUStart) * 500;
+        return eventPosition;
     }
 
 
@@ -171,36 +132,32 @@ const TimelineBranchPoint = ({ eventData, nexusData }) => {
 
     return (
         <>
-
-            {eventData.isNexusEvent ?
+            {eventData?.isNexusEvent ?
                 <g stroke='orange' stroke-width="2" fill='orange' >
                     <HtmlTooltip
                         title={
                             <>
-                                <Typography variant="h6" gutterBottom component="div" color="inherit">{eventData.eventTitle}</Typography>
-                                <Typography variant="subtitle1" gutterBottom component="div" color="inherit">{moment(eventData.releaseDate.toDate()).format("MMM-DD-YYYY")}</Typography>
+                                <Typography variant="h6" gutterBottom component="div" color="inherit">{eventData?.eventTitle}</Typography>
+                                <Typography variant="subtitle1" gutterBottom component="div" color="inherit">{moment(eventData?.releaseDate.toDate()).format("MMM-DD-YYYY")}</Typography>
                             </>
                         }
                     >
-                        <circle id="timelinePoint" className='timelinePoint' cx={calculateEventPosition(eventData?.releaseDate, eventData?.previousEvent)} cy={timelineVStartLocation} r="8" />
+                        <circle id="timelinePoint" className='timelinePoint' cx={calculateEventPosition(eventData?.releaseDate)} cy={timelineVStartLocation} r="8" />
                     </HtmlTooltip>
                     <LightTooltip
                         title={
                             <>
-                                <Typography variant="h6" gutterBottom component="div" color="inherit">{nexusData.eventTitle}</Typography>
-                                <Typography variant="subtitle1" gutterBottom component="div" color="inherit">{moment(nexusData.date.toDate()).format("MMM-DD-YYYY")}</Typography>
+                                <Typography variant="h6" gutterBottom component="div" color="inherit">{nexusData?.eventTitle}</Typography>
+                                <Typography variant="subtitle1" gutterBottom component="div" color="inherit">{moment(nexusData?.date?.toDate()).format("MMM-DD-YYYY")}</Typography>
                             </>
                         }
                     >
-                        <circle id="nexusPoint" className='timelinePoint' cx={calculateEventPosition(eventData?.releaseDate, eventData?.previousEvent) + 125} cy={timelineVStartLocation + (-150)} r="8" />
+                        <circle id="nexusPoint" className='timelinePoint' cx={calculateEventPosition(eventData?.releaseDate) + 125} cy={timelineVStartLocation + (-150)} r="8" />
                     </LightTooltip>
 
                 </g>
-
                 :
-
                 <g stroke='white' stroke-width="8" fill='white' >
-
                     <HtmlTooltip
                         title={
                             <>
@@ -209,20 +166,20 @@ const TimelineBranchPoint = ({ eventData, nexusData }) => {
                             </>
                         }
                     >
-                        <circle id="pointA" className='timelinePoint' cx={calculateEventPosition(eventData?.releaseDate, eventData?.previousEvent)} cy={timelineVStartLocation} r="4" />
+                        <circle id="pointA" className='timelinePoint' cx={calculateEventPosition(eventData?.releaseDate)} cy={timelineVStartLocation} r="4" />
                     </HtmlTooltip>
-
                 </g>
             }
 
-            {eventData.isNexusEvent ?
-                <path className="curve" d={`M${eventData.timelinePoint},${timelineVStartLocation} Q${calculateEventPosition(eventData?.releaseDate) + 100},${timelineVStartLocation} ${parseInt(eventData.timelinePoint) + 125},${timelineVStartLocation + (-155)}`} stroke="orange" strokeWidth="5px" stroke-linecap="round" fill="none" />
-
+            {eventData?.isNexusEvent ?
+                <path className="curve" d={`M${calculateEventPosition(eventData?.releaseDate)},
+                ${timelineVStartLocation} Q${calculateEventPosition(eventData?.releaseDate) + 100},
+                ${timelineVStartLocation}
+                ${calculateEventPosition(eventData?.releaseDate) + 125},
+                ${timelineVStartLocation + (-155)}`} stroke="orange" strokeWidth="5px" stroke-linecap="round" fill="none" />
                 :
-
                 <></>
             }
-
         </>
     );
 

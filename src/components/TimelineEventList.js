@@ -43,7 +43,6 @@ const checkWhiteSpace = (name) => {
 
 const TimelineEventList = ({ timelineEvents, nexusEvents }) => (
     <>
-{console.log("timelineEvents", timelineEvents)}
         <TableContainer className="tableContainer">
             <Table stickyHeader aria-label="sticky table">
                 <TableHead >
@@ -65,23 +64,23 @@ const TimelineEventList = ({ timelineEvents, nexusEvents }) => (
                 <TableBody>
                     {timelineEvents.map((row, key) => {
                         return (
-                            <TableRow hover tabIndex={-1} key={key}>
-                                {columns.map((column, key) => {
+                            <TableRow hover tabIndex={-1} key={row.code}>
+                                {columns.map((column, colKey) => {
                                     const value = row[column.id];
                                     return (
-                                        <TableCell key={key} align={column.align}>
+                                        <TableCell key={colKey} align={column.align}>
                                             {column.format && column.type === 'string' ? value : column.format && column.type === 'date' ? column.format(value) : column.format && column.type === 'time' ? column.format(value) : value}
                                         </TableCell>
                                     );
                                 })}
                                 <TableCell>
-                                    <Link key={key} to={checkWhiteSpace(`${row['eventTitle']}`) ? `/event/${row['eventTitle'].replace(/ /g, "_")}` : `/event/${row['eventTitle']}`} state={{ eventData: timelineEvents.find((event) => event.code == `${row['code']}`) }}>
-                                        <Button variant="outlined" size="small" color="secondary">
+                                    <Link key={`prime-${row.code}`} to={checkWhiteSpace(`${row['eventTitle']}`) ? `/event/${row['eventTitle'].replace(/ /g, "_")}` : `/event/${row['eventTitle']}`} state={{ eventData: timelineEvents.find((event) => event.code == `${row['code']}`) }}>
+                                        <Button sx={{marginRight: '12px'}} variant="outlined" size="small" color="secondary">
                                             Prime Event
                                         </Button>
                                     </Link>
                                     {row?.hasNexusEvent ?
-                                        <Link key={key} to={`/event/${row['code']}`} state={{ eventData: nexusEvents.find((event) => event.code == `${row['code']}`) }}>
+                                        <Link key={`nexus-${row.code}`} to={`/event/${row['code']}`} state={{ eventData: nexusEvents.find((event) => event.code == `${row['code']}`) }}>
                                             <Button variant="outlined" size="small" color="primary">
                                                 Nexus Event
                                             </Button>
