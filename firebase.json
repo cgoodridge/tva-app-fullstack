@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "public": "build",
+    "site": "tva",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

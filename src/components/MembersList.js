@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
@@ -11,7 +11,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import '../css/memberList.css';
 
 const SimpleDialog = (props) => {
-    const { onClose, selectedValue, open, memberName, memberPosition, memberBio, memberImgURL } = props;
+    const { onClose, selectedValue, open, firstName, lastName, memberBio, memberImgURL } = props;
 
     const handleClose = () => {
         onClose(selectedValue);
@@ -23,12 +23,12 @@ const SimpleDialog = (props) => {
 
     return (
         <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>{memberName}</DialogTitle>
+            <DialogTitle>{firstName + ' ' + lastName}</DialogTitle>
             <DialogContent>
 
                 <Grid container>
                     <Grid item xs={6}>
-                        <img className='imageStyle' src={memberImgURL} alt={memberName} width="80%"></img>
+                        <img className='imageStyle' src={memberImgURL} alt={firstName} width="80%"></img>
                     </Grid>
                     <Grid item xs={6}>
                         <DialogContentText id="alert-dialog-description">
@@ -50,9 +50,10 @@ SimpleDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired,
     selectedValue: PropTypes.string.isRequired,
-    memberPosition: PropTypes.string.isRequired,
+    memberRole: PropTypes.string.isRequired,
     memberBio: PropTypes.string.isRequired,
-    memberName: PropTypes.string.isRequired,
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
 };
 
 
@@ -88,10 +89,10 @@ const MemberCard = ({ member }) => {
                     component="img"
                     height="450"
                     image={member.imgURL}
-                    title={member.memberName}
+                    title={member.firstName}
                 />
                 <Typography variant="h5" component="h2" className="cardText">
-                    {member.position}
+                    {member.role + ' ' + member.lastName}
                 </Typography>
                 <div className="textPanel"></div>
             </Card>
@@ -100,8 +101,9 @@ const MemberCard = ({ member }) => {
                 selectedValue={selectedValue}
                 open={open}
                 onClose={handleClose}
-                memberPosition={member.position}
-                memberName={member.name}
+                memberRole={member.role}
+                firstName={member.firstName}
+                lastName={member.lastName}
                 memberBio={member.bio}
                 memberImgURL={member.imgURL}
             />
